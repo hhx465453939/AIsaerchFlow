@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+streamlit
+pycryptodome
+requests
+python-dotenv
+playwright
+langchain
+scikit-learn 
