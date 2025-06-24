@@ -1,29 +1,36 @@
 from playwright.sync_api import sync_playwright
+import os
 
 def run(optimized_query, account=None, headless=False):
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
-        context = browser.new_context()
-        page = context.new_page()
-        # 1. 打开首页
-        page.goto("https://chatglm.cn/main/alltoolsdetail?lang=zh")
-        # 2. 登录（手机号+验证码，留空）
-        # TODO: 自动登录可用account参数
-        # 3. 搜索操作
-        # 开启沉思+联网模式
+        user_data_dir = os.path.expandvars(r"%LOCALAPPDATA%\\Microsoft\\Edge\\User Data")
+        browser = p.chromium.launch_persistent_context(
+            user_data_dir=user_data_dir,
+            headless=False,
+            channel="msedge"
+        )
+        page = browser.new_page()
         try:
-            page.click("button:has-text('沉思')")
-        except Exception:
-            pass
-        try:
-            page.click("button:has-text('联网')")
-        except Exception:
-            pass
-        # 输入搜索内容
-        page.fill("#prompt-textarea", optimized_query)
-        page.click("button:has-text('发送')")
-        page.wait_for_selector(".chat-message", timeout=15000)
-        # 爬取结果
-        results = [el.inner_text() for el in page.query_selector_all(".chat-message")]
+            print('[ChatGLM] 打开首页...')
+            page.goto("https://chatglm.cn/")
+            page.screenshot(path="debug_chatglm_1_home.png")
+            print('[ChatGLM] 等待输入框出现...')
+            page.wait_for_selector('[contenteditable="true"]', timeout=30000)
+            print('[ChatGLM] 填写输入框...')
+            page.fill('[contenteditable="true"]', optimized_query)
+            page.screenshot(path="debug_chatglm_2_filled.png")
+            print('[ChatGLM] 聚焦输入框并回车发送...')
+            page.focus('[contenteditable="true"]')
+            page.keyboard.press('Enter')
+            print('[ChatGLM] 等待AI回复...')
+            page.wait_for_selector('.message-area-LmU13Q', timeout=30000)
+            page.screenshot(path="debug_chatglm_3_result.png")
+            all_msgs = page.query_selector_all('.message-area-LmU13Q .markdown-body')
+            latest = all_msgs[-1].inner_text() if all_msgs else ''
+            print('[ChatGLM] 最新AI回复:', latest)
+        except Exception as e:
+            print('[ChatGLM] 脚本异常:', e)
+            page.screenshot(path="debug_chatglm_error.png")
+            latest = ''
         browser.close()
-        return results 
+        return latest 
