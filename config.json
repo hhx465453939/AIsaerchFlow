@@ -1,0 +1,52 @@
+{
+  "project_name": "AI多平台搜索聚合器",
+  "version": "2.0.0",
+  
+  "platforms": {
+    "enabled": ["DeepSeek", "Kimi", "智谱清言"],
+    "selectors": {
+      "DeepSeek": ".c08e6e93",
+      "Kimi": ".message-list .message-item:last-child",
+      "智谱清言": ".message-area-LmU13Q .markdown-body:last-child"
+    }
+  },
+  
+  "stream_monitoring": {
+    "timeout": 60,
+    "check_interval": 0.5,
+    "completion_wait": 5
+  },
+  
+  "aggregation": {
+    "enable_deduplication": true,
+    "min_content_length": 10,
+    "max_content_length": 10000
+  },
+  
+  "ai_processor": {
+    "enabled": false,
+    "default_service": "siliconflow",
+    "services": {
+      "siliconflow": {
+        "base_url": "https://api.siliconflow.cn/v1",
+        "model": "Qwen/Qwen2.5-7B-Instruct"
+      },
+      "openai": {
+        "base_url": "https://api.openai.com/v1",
+        "model": "gpt-3.5-turbo"
+      }
+    }
+  },
+  
+  "output": {
+    "format": "markdown",
+    "include_metadata": true,
+    "save_raw_results": false
+  },
+  
+  "ui": {
+    "port": 8501,
+    "theme": "dark",
+    "auto_refresh": true
+  }
+} 

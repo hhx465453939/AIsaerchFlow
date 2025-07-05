@@ -1,0 +1,34 @@
+{
+  "llm_config": {
+    "base_url": "https://api.siliconflow.cn/v1",
+    "api_key": "your_api_key_here",
+    "model": "qwen-vl-plus",
+    "temperature": 0.3,
+    "max_tokens": 4000
+  },
+  "ai_features": {
+    "use_ai_integration": true,
+    "enable_fact_check": true,
+    "semantic_deduplication": true
+  },
+  "platforms": [
+    "DeepSeek",
+    "Kimi",
+    "智谱清言"
+  ],
+  "browser_config": {
+    "browser": "Edge",
+    "user_data_dir": "",
+    "headless": false
+  },
+  "fact_check_config": {
+    "enabled": true,
+    "timeout": 30,
+    "max_retries": 3
+  },
+  "integration_config": {
+    "similarity_threshold": 0.8,
+    "max_content_length": 10000,
+    "output_format": "markdown"
+  }
+} 
